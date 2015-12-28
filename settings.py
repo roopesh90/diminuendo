@@ -24,4 +24,4 @@ SETTINGS ['logging'] = "debug"
 
 #sqlite db path
 DBNAME = "db/diminuendo.db"
-define("DBPATH", default=PATH(ROOT, DBNAME))
+SETTINGS ['DBPATH'] = PATH(ROOT, DBNAME)
