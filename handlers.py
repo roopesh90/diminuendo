@@ -203,8 +203,6 @@ class TitleSearchHandler(BaseHandler):
             escape_char = '%'
             search_query = self.get_json_argument('q')
             query = '''select * from urlsbase WHERE title like '%c%s%c' ''' % (escape_char, search_query, escape_char)
-            print(search_query)
-            print(query)
             rows = _execute(query)
             self.response = []
             # collate results as json list
