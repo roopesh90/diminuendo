@@ -83,3 +83,6 @@ pip-selfcheck.json
 Session.vim
 .netrwhist
 *~
+
+### Custom ignores ###
+db/
