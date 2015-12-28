@@ -19,13 +19,15 @@ class BaseHandler(tornado.web.RequestHandler):
     def prepare(self):
         """Incorporate request JSON into arguments dictionary.
         """
-        if self.request.body:
-            try:
-                json_data = json.loads(self.request.body)
-                self.request.arguments.update(json_data)
-            except ValueError:
-                message = 'Unable to parse JSON.'
-                self.send_error(400, message=message) # Bad Request
+        # #Get request body as json
+        # if self.request.body:
+        #     try:
+        #         json_data = json.loads(self.request.body)
+        #         self.request.arguments.update(json_data)
+        #     except ValueError:
+        #     # except (ValueError, TypeError):
+        #         message = 'Unable to parse JSON.'
+        #         self.send_error(400, message=message) # Bad Request
 
         # Set up response dictionary.
         self.response = dict()    
