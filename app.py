@@ -23,12 +23,12 @@ def dbSeeder():
         print('Creating table \'urlsbase\'')
         cursorobj.execute('CREATE TABLE urlsbase (\
             id INTEGER PRIMARY KEY   AUTOINCREMENT,\
-            url text,\
-            title text,\
-            shrink text,\
-            hits text,\
-            created_at timestamp,\
-            updated_at timestamp)')
+            url TEXT,\
+            title TEXT,\
+            shrink TEXT,\
+            hits INTEGER,\
+            created_at TIMESTAMP,\
+            updated_at TIMESTAMP)')
         print('Successfully created table \'urlsbase\'')
     connection.commit()
     connection.close()
