@@ -115,6 +115,23 @@ def update_url_hit(row=None,url=None,url_hash=None):
         return None
     pass
 
+def timestamp_parser(timestamp_str=None):
+    """DB timestamp to datetime
+    """
+    if timestamp_str!=None:
+        
+        return datetime.datetime.strptime(timestamp_str, "%Y-%m-%d %H:%M:%S.%f")
+    else:
+        return None
+
+def timestamp_to_hooman(timestamp_str=None):
+    """DB timestamp to human readable
+    """
+    if timestamp_str!=None:
+        date_time = timestamp_parser(timestamp_str)
+        return date_time.strftime("%A ,%d %b %Y, %I:%M:%S %p")
+    else:
+        return None
 
 ##Handlers below
 class MainHandler(BaseHandler):
@@ -212,7 +229,63 @@ class TitleSearchHandler(BaseHandler):
                 temp_dict['short_url'] = self.get_short_url(entries[3])
                 self.response.append(temp_dict)
             self.write_json()
-            self.finish()
+            
+        except Exception as e:
+            msg = "something went wrong: %s" % e
+            logger.info(msg)
+            if not self._finished:
+                #if the connection is closed, it won't call this function
+                self.send_error(400, message="something went wrong") # Bad Request
+            else:
+                pass
+
+
+class URLMetaListHandler(BaseHandler):
+    def get(self):
+        """Lists all meta urls for links
+        """
+        try:
+            query = '''select * from urlsbase''' 
+            rows = _execute(query)
+            self.response = []
+            # collate results as json list
+            for entries in rows:
+                temp_dict = {}
+                temp_dict['meta_url'] = self.get_short_url("meta/%s" % (entries[3]))
+                self.response.append(temp_dict)
+            self.write_json()
+            
+        except Exception as e:
+            msg = "something went wrong: %s" % e
+            logger.info(msg)
+            if not self._finished:
+                #if the connection is closed, it won't call this function
+                self.send_error(400, message="something went wrong") # Bad Request
+            else:
+                pass
+
+class URLMetaHandler(BaseHandler):
+    def get(self, url_hash):
+        """Return meta details of short url
+        """
+        try:
+            if url_hash!=None:
+                print(url_hash)
+                row = check_url_existence(None, url_hash)
+                # collate required fields
+                if row!=None:
+                    
+                    self.response['url'] = row[1]
+                    self.response['title'] = row[2]
+                    self.response['short_url'] = row[3]
+                    self.response['no_hits'] = row[4]
+                    self.response['created_at'] = timestamp_to_hooman(row[5])
+                    self.response['updated_at'] = timestamp_to_hooman(row[6])
+                    self.response['last_hit_at'] = timestamp_to_hooman(row[7])
+                self.write_json()
+            else:
+                self.send_error(400, message="Short url doesnt exist")
+            
             
         except Exception as e:
             msg = "something went wrong: %s" % e
