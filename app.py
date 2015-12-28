@@ -24,7 +24,7 @@ def dbSeeder():
         cursorobj.execute('CREATE TABLE urlsbase (\
             id INTEGER PRIMARY KEY   AUTOINCREMENT,\
             url TEXT,\
-            title TEXT,\
+            title TEXT  DEFAULT "",\
             shrink TEXT,\
             hits INTEGER  DEFAULT 0,\
             created_at TIMESTAMP,\
