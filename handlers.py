@@ -216,7 +216,12 @@ class URLshrinkHandler(BaseHandler):
 
     def create_hash(self):
         _hash = ''.join(random.choice(string.ascii_lowercase +string.ascii_uppercase + string.digits) for _ in range(7))
-        return _hash
+        query = '''select id from urlsbase WHERE shrink = '%s' ''' % (_hash)
+        rows = _execute(query)
+        if len(rows)== 0:
+            return _hash
+        else:
+            return self.create_path()
 
 class TitleSearchHandler(BaseHandler):
     """
