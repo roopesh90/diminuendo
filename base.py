@@ -41,7 +41,6 @@ class BaseHandler(tornado.web.RequestHandler):
         """Find and return the argument with key 'name' from JSON request data.
         Similar to Tornado's get_argument() method.
         """
-        logger.debug("get_json_argument called")
         if default is None:
             default = self._ARG_DEFAULT
         if not self.request.arguments:
@@ -55,8 +54,6 @@ class BaseHandler(tornado.web.RequestHandler):
             return default
         arg = self.request.arguments[name]
         logger.debug("Found '%s': %s in JSON arguments" % (name, arg))
-        
-        logger.info("done")
         return arg
     
     def write_error(self, status_code, **kwargs):
