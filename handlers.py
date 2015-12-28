@@ -190,8 +190,7 @@ class URLshrinkHandler(BaseHandler):
                 pass
 
     def create_hash(self):
-        _hash = ''.join(random.choice(string.ascii_lowercase +string.ascii_uppercase + string.digits) for _ in range(5))
-        print(_hash)
+        _hash = ''.join(random.choice(string.ascii_lowercase +string.ascii_uppercase + string.digits) for _ in range(7))
         return _hash
 
 class TitleSearchHandler(BaseHandler):
