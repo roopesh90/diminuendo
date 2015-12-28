@@ -70,19 +70,24 @@ def update_url_title(url=None,row=None):
         msg = "something went wrong: %s" % e
         logger.info(msg)
 
-def check_urlhash_existence(url=None):
+def check_url_existence(url=None, url_hash=None):
     """To if url hash already generated
     """
     try:
         if url!=None:
             query = '''select * from urlsbase WHERE url like '%s' ''' % (url);
-            row = _execute(query, False)
-            if row!= None:
-                return row
+        elif url_hash!=None:
+            query = '''select * from urlsbase WHERE shrink like '%s' ''' % (url_hash);
+        else:
+            return None
+            
+        row = _execute(query, False)
+        if row!= None:
+            return row
     except Exception as e:
         msg = "something went wrong: %s" % e
         logger.info(msg)
-    return None
+        return None
 
 def update_url_hit(row=None):
     """To update hit count on url
@@ -91,15 +96,28 @@ def update_url_hit(row=None):
 
 class MainHandler(BaseHandler):
     def get(self):
-        self.response["message"] = "Yo"
+        self.response["message"] = "Yo, short url needed"
         self.write_json()
+
+class RedirectHandler(BaseHandler):
+    @tornado.web.asynchronous
+    def get(self, url_hash):
+        """Redirect to url
+        """
+        if url_hash==None:
+            self.redirect("/")
+        else:
+            row = check_url_existence(None,url_hash)
+            self.redirect(row[1])
+        return
+            
     
 class URLshrinkHandler(BaseHandler):
     @tornado.web.asynchronous
     def post(self):
         try:
             url = self.get_json_argument('u')
-            row = check_urlhash_existence(url)
+            row = check_url_existence(url)
             #check url existence and generate hash and insert to db
             if row == None:
                 url_hash = self.create_hash()
