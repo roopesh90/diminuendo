@@ -28,7 +28,8 @@ def dbSeeder():
             shrink TEXT,\
             hits INTEGER  DEFAULT 0,\
             created_at TIMESTAMP,\
-            updated_at TIMESTAMP)')
+            updated_at TIMESTAMP,\
+            lasthit_at TIMESTAMP)')
         print('Successfully created table \'urlsbase\'')
     connection.commit()
     connection.close()
