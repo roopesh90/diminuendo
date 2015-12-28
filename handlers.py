@@ -135,15 +135,18 @@ def timestamp_to_hooman(timestamp_str=None):
 
 ##Handlers below
 class MainHandler(BaseHandler):
+    """List of all urls and handler descriptions
+    """
     def get(self):
+        
         self.response["message"] = "Yo, short url needed"
         self.write_json()
         
 class RedirectHandler(BaseHandler):
+    """Redirect to url and asynchronously updated hit count
+    """
     @tornado.web.asynchronous
     def get(self, url_hash):
-        """Redirect to url and asynchronously updated hit count
-        """
         if url_hash==None:
             self.redirect("/")
         else:
@@ -154,11 +157,10 @@ class RedirectHandler(BaseHandler):
             
     
 class URLshrinkHandler(BaseHandler):
+    """Checks url existence, creates short url and updated title to db entry of url asynchronously
+    """
     @tornado.web.asynchronous
     def post(self):
-        """
-        Checks url existence, creates short url and updated title to db entry of url asynchronously
-        """
         try:
             url = self.get_json_argument('u')
             row = check_url_existence(url)
@@ -241,9 +243,9 @@ class TitleSearchHandler(BaseHandler):
 
 
 class URLMetaListHandler(BaseHandler):
+    """Lists all meta urls for links
+    """
     def get(self):
-        """Lists all meta urls for links
-        """
         try:
             query = '''select * from urlsbase''' 
             rows = _execute(query)
@@ -265,9 +267,9 @@ class URLMetaListHandler(BaseHandler):
                 pass
 
 class URLMetaHandler(BaseHandler):
+    """Return meta details of short url
+    """
     def get(self, url_hash):
-        """Return meta details of short url
-        """
         try:
             if url_hash!=None:
                 print(url_hash)
