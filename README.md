@@ -10,4 +10,6 @@
 - /s/
     - search url using title
 - /meta/
-    - returns url metadata
+    - returns metadata links for shourturls
+- /meta/<hash>
+    - returns metadata of short urls
