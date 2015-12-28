@@ -69,4 +69,9 @@ class BaseHandler(tornado.web.RequestHandler):
     def write_json(self):
         output = json.dumps(self.response)
         self.write(output)
-        
+    
+    def get_short_url(self, url_hash=""):
+        """Returns formed short url from url_hash
+        """
+        short_url =("%s://%s/%s" % (self.request.protocol, self.request.host,url_hash)) 
+        return short_url

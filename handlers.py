@@ -115,11 +115,13 @@ def update_url_hit(row=None,url=None,url_hash=None):
         return None
     pass
 
+
+##Handlers below
 class MainHandler(BaseHandler):
     def get(self):
         self.response["message"] = "Yo, short url needed"
         self.write_json()
-
+        
 class RedirectHandler(BaseHandler):
     @tornado.web.asynchronous
     def get(self, url_hash):
@@ -163,10 +165,8 @@ class URLshrinkHandler(BaseHandler):
                 updated_at = row[6]
                 lasthit_at = row[7]
             
-            print(vars(self.request))
-            short_url =("%s://%s/%s" %           (self.request.protocol, self.request.host,url_hash)) 
             self.response['url'] = url
-            self.response['short_url'] = short_url
+            self.response['short_url'] = self.get_short_url(url_hash)
             self.response['created_at'] = str(created_at)
             self.response['updated_at'] = str(updated_at)
             self.response['lasthit_at'] = str(lasthit_at)
@@ -193,3 +193,35 @@ class URLshrinkHandler(BaseHandler):
         _hash = ''.join(random.choice(string.ascii_lowercase +string.ascii_uppercase + string.digits) for _ in range(5))
         print(_hash)
         return _hash
+
+class TitleSearchHandler(BaseHandler):
+    """
+    Search url using page title
+    """
+    def post(self):
+        try:
+            escape_char = '%'
+            search_query = self.get_json_argument('q')
+            query = '''select * from urlsbase WHERE title like '%c%s%c' ''' % (escape_char, search_query, escape_char)
+            print(search_query)
+            print(query)
+            rows = _execute(query)
+            self.response = []
+            # collate results as json list
+            for entries in rows:
+                temp_dict = {}
+                temp_dict['title'] = entries[2]
+                temp_dict['url'] = entries[1]
+                temp_dict['short_url'] = self.get_short_url(entries[3])
+                self.response.append(temp_dict)
+            self.write_json()
+            self.finish()
+            
+        except Exception as e:
+            msg = "something went wrong: %s" % e
+            logger.info(msg)
+            if not self._finished:
+                #if the connection is closed, it won't call this function
+                self.send_error(400, message="something went wrong") # Bad Request
+            else:
+                pass
