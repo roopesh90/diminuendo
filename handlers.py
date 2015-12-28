@@ -64,7 +64,7 @@ def update_url_title(url=None,row=None):
             title = get_url_title(url)
             updated_at = datetime.datetime.now()
             query = ''' update urlsbase
-                        set title = '%s', updated_at = '%s' where id = %d ''' % (title, updated_at, row);
+                        set title = '%s', updated_at = '%s' where id = %d ''' % (title, updated_at, row)
             _execute(query)
     except Exception as e:
         msg = "something went wrong: %s" % e
@@ -75,9 +75,9 @@ def check_url_existence(url=None, url_hash=None):
     """
     try:
         if url!=None:
-            query = '''select * from urlsbase WHERE url like '%s' ''' % (url);
+            query = '''select * from urlsbase WHERE url like '%s' ''' % (url)
         elif url_hash!=None:
-            query = '''select * from urlsbase WHERE shrink like '%s' ''' % (url_hash);
+            query = '''select * from urlsbase WHERE shrink like '%s' ''' % (url_hash)
         else:
             return None
             
@@ -89,9 +89,30 @@ def check_url_existence(url=None, url_hash=None):
         logger.info(msg)
         return None
 
-def update_url_hit(row=None):
+def update_url_hit(row=None,url=None,url_hash=None):
     """To update hit count on url
     """
+    try:
+        lasthit_at = datetime.datetime.now()
+        if row!=None:
+            query = ''' update urlsbase
+                        set hits = hits+1, lasthit_at = '%s' where id = %d ''' % (lasthit_at, row)
+        elif url!=None:
+            query = ''' update urlsbase
+                        set hits = hits+1, lasthit_at = '%s' where url = %s ''' % (lasthit_at, url)
+        elif url_hash!=None:
+            query = query = ''' update urlsbase
+                        set hits = hits+1, lasthit_at = '%s' where shrink = %d ''' % (lasthit_at, url_hash)
+        else:
+            return None
+            
+        row = _execute(query, False)
+        if row!= None:
+            return True
+    except Exception as e:
+        msg = "something went wrong: %s" % e
+        logger.info(msg)
+        return None
     pass
 
 class MainHandler(BaseHandler):
@@ -102,19 +123,23 @@ class MainHandler(BaseHandler):
 class RedirectHandler(BaseHandler):
     @tornado.web.asynchronous
     def get(self, url_hash):
-        """Redirect to url
+        """Redirect to url and asynchronously updated hit count
         """
         if url_hash==None:
             self.redirect("/")
         else:
             row = check_url_existence(None,url_hash)
             self.redirect(row[1])
+            update_url_hit(row[0])
         return
             
     
 class URLshrinkHandler(BaseHandler):
     @tornado.web.asynchronous
     def post(self):
+        """
+        Checks url existence, creates short url and updated title to db entry of url asynchronously
+        """
         try:
             url = self.get_json_argument('u')
             row = check_url_existence(url)
@@ -128,7 +153,7 @@ class URLshrinkHandler(BaseHandler):
                 # name = self.get_argument("name")
                 query = ''' insert into urlsbase
                             (url, shrink, created_at, updated_at, lasthit_at) values 
-                            ('%s', '%s', '%s', '%s', '%s') ''' % (url, url_hash, created_at, updated_at, lasthit_at);
+                            ('%s', '%s', '%s', '%s', '%s') ''' % (url, url_hash, created_at, updated_at, lasthit_at)
                 _execute(query)
             else:
                 
@@ -150,7 +175,7 @@ class URLshrinkHandler(BaseHandler):
             
             if row == None:
                 #get title and update row
-                query = '''select id from urlsbase WHERE shrink = '%s' ''' % (url_hash);
+                query = '''select id from urlsbase WHERE shrink = '%s' ''' % (url_hash)
                 row = _execute(query, False)
                 if row!= None:
                     update_url_title(url,row[0])
