@@ -11,6 +11,7 @@ import logging as logger
 import tornado.httpclient as httpclient
 from bs4 import BeautifulSoup
 import datetime
+import inspect
 
 print(dummySettings['DBPATH'])
 
@@ -138,8 +139,13 @@ class MainHandler(BaseHandler):
     """List of all urls and handler descriptions
     """
     def get(self):
-        
-        self.response["message"] = "Yo, short url needed"
+        app_handlers = [(handler.regex.pattern, handler.handler_class) for handler in self.application.handlers[0][1]]
+        self.response = []
+        for handler in app_handlers:
+            temp_dict={}
+            temp_dict['url'] = handler[0]
+            temp_dict['description'] = inspect.getdoc(handler[1])
+            self.response.append(temp_dict)
         self.write_json()
         
 class RedirectHandler(BaseHandler):
