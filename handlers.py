@@ -216,7 +216,12 @@ class URLshrinkHandler(BaseHandler):
 
     def create_hash(self):
         _hash = ''.join(random.choice(string.ascii_lowercase +string.ascii_uppercase + string.digits) for _ in range(7))
-        return _hash
+        query = '''select id from urlsbase WHERE shrink = '%s' ''' % (_hash)
+        rows = _execute(query)
+        if len(rows)== 0:
+            return _hash
+        else:
+            return self.create_path()
 
 class TitleSearchHandler(BaseHandler):
     """
@@ -285,7 +290,7 @@ class URLMetaHandler(BaseHandler):
                     
                     self.response['url'] = row[1]
                     self.response['title'] = row[2]
-                    self.response['short_url'] = row[3]
+                    self.response['short_url'] = self.get_short_url(row[3])
                     self.response['no_hits'] = row[4]
                     self.response['created_at'] = timestamp_to_hooman(row[5])
                     self.response['updated_at'] = timestamp_to_hooman(row[6])
