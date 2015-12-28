@@ -1,16 +1,20 @@
 import tornado.ioloop
 import tornado.web
+import tornado.httpserver
+from tornado.options import options
 
-class MainHandler(tornado.web.RequestHandler):
-    def get(self):
-        self.write("Yo")
+from settings import SETTINGS
+from urls import URL_PATTERNS
 
-def make_app():
-    return tornado.web.Application([
-        (r"/", MainHandler),
-    ])
+class DiminuendoApp(tornado.web.Application):
+    def __init__(self):
+        tornado.web.Application.__init__(self, URL_PATTERNS, **SETTINGS)
+
+def main():
+    app = DiminuendoApp()
+    http_server = tornado.httpserver.HTTPServer(app)
+    http_server.listen(options.port)
+    tornado.ioloop.IOLoop.instance().start()
 
 if __name__ == "__main__":
-    app = make_app()
-    app.listen(8888)
-    tornado.ioloop.IOLoop.current().start()
+    main()
