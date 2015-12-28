@@ -290,7 +290,7 @@ class URLMetaHandler(BaseHandler):
                     
                     self.response['url'] = row[1]
                     self.response['title'] = row[2]
-                    self.response['short_url'] = row[3]
+                    self.response['short_url'] = self.get_short_url(row[3])
                     self.response['no_hits'] = row[4]
                     self.response['created_at'] = timestamp_to_hooman(row[5])
                     self.response['updated_at'] = timestamp_to_hooman(row[6])
