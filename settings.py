@@ -22,7 +22,7 @@ SETTINGS ['debug'] = True
 SETTINGS ['serve_traceback'] = True
 SETTINGS ['logging'] = "debug"
 
-#sqlite db path
+#SQLite db path
 DBNAME = "db/diminuendo.db"
 SETTINGS ['DBPATH'] = PATH(ROOT, DBNAME)
 
@@ -32,4 +32,4 @@ logger.info("Spinning up @ port "+ str(options.port) + "\n")
 logger.info("INITIAL SETTINGS: \n")
 logger.info("Deployment type:     "+DEPLOYMENT)
 logger.info("HTTP server name:    "+tornado.options.options.SERVER)
-logger.info("Sqlite DB path:      "+SETTINGS['DBPATH']+"\n")
+logger.info("SQLite DB path:      "+SETTINGS['DBPATH']+"\n")

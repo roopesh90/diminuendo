@@ -15,7 +15,7 @@ class DiminuendoApp(tornado.web.Application):
 def dbSeeder():
     """Db seeder and verifier
     """
-    logger.info("Db seeder initiated")
+    logger.info("SQLite DB seeder initiated")
     connection = sqlite3.connect(SETTINGS['DBPATH'])
     cursorobj = connection.cursor()
     basetbl="urlsbase"
