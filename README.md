@@ -30,19 +30,15 @@
 
 #### Setup
 
-1. cd to the root of the project folder in the terminal 
-2. run the command below to switch :
-```
-$ source venv/bin/activate
-```
-3. install requirements using pip as follows:
-```
-$ pip install -r requirements.pip 
-```
-4. run command below to start server:
-```
-$ python app.py 
-```
-5. goto http://localhost:8888/ to access the API
+1. cd to the root of the project folder in the terminal
+2. run the command below to create a virtualenv for the project: `$ virtualenv -p python3 venv`
+3. run the command below to switch to virtualenv:
+` $ source venv/bin/activate `
+3. run the command below to switch to virtualenv:
+4. install required libraries to the using pip as follows:
+` $ pip install -r requirements.pip `
+5. run command below to start server:
+`$ python app.py `
+6. goto http://localhost:8888/ to access the API
     
     
