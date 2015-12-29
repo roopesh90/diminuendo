@@ -148,7 +148,7 @@ class MainHandler(BaseHandler):
         self.write_json()
         
 class RedirectHandler(BaseHandler):
-    """Redirect to url and asynchronously updated hit count
+    """Redirect to url and asynchronously updates hit count
     """
     @tornado.web.asynchronous
     def get(self, url_hash):
@@ -165,7 +165,7 @@ class RedirectHandler(BaseHandler):
             
     
 class URLshrinkHandler(BaseHandler):
-    """Checks url existence, creates short url and updated title to db entry of url asynchronously
+    """Checks url existence, creates short url and updates title to db entry of url asynchronously
     """
     @tornado.web.asynchronous
     def post(self):
