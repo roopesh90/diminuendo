@@ -13,7 +13,6 @@ from bs4 import BeautifulSoup
 import datetime
 import inspect
 
-print(dummySettings['DBPATH'])
 
 def _execute(query, fetchall=True):
     """Single method to execute all sql queries
@@ -157,8 +156,11 @@ class RedirectHandler(BaseHandler):
             self.redirect("/")
         else:
             row = check_url_existence(None,url_hash)
-            self.redirect(row[1])
-            update_url_hit(row[0])
+            if row==None:
+                self.send_error(404, message="Requested url not found") # Bad Request
+            else:
+                self.redirect(row[1])
+                update_url_hit(row[0])
         return
             
     
@@ -176,8 +178,6 @@ class URLshrinkHandler(BaseHandler):
                 created_at = datetime.datetime.now()
                 updated_at = datetime.datetime.now()
                 lasthit_at = datetime.datetime.now()
-                # marks = int(self.get_argument("marks"))
-                # name = self.get_argument("name")
                 query = ''' insert into urlsbase
                             (url, shrink, created_at, updated_at, lasthit_at) values 
                             ('%s', '%s', '%s', '%s', '%s') ''' % (url, url_hash, created_at, updated_at, lasthit_at)
@@ -192,9 +192,6 @@ class URLshrinkHandler(BaseHandler):
             
             self.response['url'] = url
             self.response['short_url'] = self.get_short_url(url_hash)
-            self.response['created_at'] = str(created_at)
-            self.response['updated_at'] = str(updated_at)
-            self.response['lasthit_at'] = str(lasthit_at)
             self.write_json()
             self.finish()
             
