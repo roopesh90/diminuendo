@@ -201,7 +201,8 @@ class URLshrinkHandler(BaseHandler):
                 row = _execute(query, False)
                 if row!= None:
                     update_url_title(url,row[0])
-            
+                logger.info("Tile of url fetched, added to DB")
+                
         except Exception as e:
             msg = "something went wrong: %s" % e
             logger.info(msg)
@@ -280,11 +281,9 @@ class URLMetaHandler(BaseHandler):
     def get(self, url_hash):
         try:
             if url_hash!=None:
-                print(url_hash)
                 row = check_url_existence(None, url_hash)
                 # collate required fields
                 if row!=None:
-                    
                     self.response['url'] = row[1]
                     self.response['title'] = row[2]
                     self.response['short_url'] = self.get_short_url(row[3])
@@ -292,9 +291,11 @@ class URLMetaHandler(BaseHandler):
                     self.response['created_at'] = timestamp_to_hooman(row[5])
                     self.response['updated_at'] = timestamp_to_hooman(row[6])
                     self.response['last_hit_at'] = timestamp_to_hooman(row[7])
-                self.write_json()
+                    self.write_json()
+                else:
+                    self.send_error(404, message="Short url doesnt exist")
             else:
-                self.send_error(400, message="Short url doesnt exist")
+                self.send_error(404, message="Short url doesnt exist")
             
             
         except Exception as e:
