@@ -2,7 +2,7 @@
 ---
 
 ### URLs:
--/
+- /
     - returns a list of all urls in the API and thier decription
 - /&lt;hash&gt;
     - url redirector based on short url
