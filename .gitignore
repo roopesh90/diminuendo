@@ -85,4 +85,4 @@ Session.vim
 *~
 
 ### Custom ignores ###
-db/
+db/*.db
