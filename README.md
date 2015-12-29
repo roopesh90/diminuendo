@@ -3,7 +3,7 @@
 
 ### URLs:
 - /
-    - returns a list of all urls in the API and thier decription
+    - returns a list of all urls in the API and their description
 - /&lt;hash&gt;
     - url redirector based on short url
 - /shrink/
