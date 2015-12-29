@@ -157,8 +157,11 @@ class RedirectHandler(BaseHandler):
             self.redirect("/")
         else:
             row = check_url_existence(None,url_hash)
-            self.redirect(row[1])
-            update_url_hit(row[0])
+            if row==None:
+                self.send_error(404, message="Requested url not found") # Bad Request
+            else:
+                self.redirect(row[1])
+                update_url_hit(row[0])
         return
             
     
