@@ -1,4 +1,4 @@
-# diminuendo - A simple URL shortener API
+# diminuendo - A simple URL shortener API written in Tornado
 ---
 
 ### URLs:
