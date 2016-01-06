@@ -1,17 +1,16 @@
 """
     Main Handlers and supporting methods for the app
 """
-
-import logging as logger
-import tornado.ioloop
-import tornado.web
-import tornado.httpclient as httpclient
-from bs4 import BeautifulSoup
 import datetime
 import inspect
 import string
 import random
 import sqlite3
+import logging as logger
+import tornado.ioloop
+import tornado.web
+import tornado.httpclient as httpclient
+from bs4 import BeautifulSoup
 
 from base import BaseHandler
 from settings import SETTINGS as dummySettings
@@ -117,7 +116,6 @@ def update_url_hit(row=None, url=None, url_hash=None):
         msg = "something went wrong: %s" % e_exp
         logger.info(msg)
         return None
-    pass
 
 def timestamp_parser(timestamp_str=None):
     """DB timestamp to datetime
@@ -211,6 +209,8 @@ class URLshrinkHandler(BaseHandler):
                 pass
 
     def create_hash(self):
+        """Creates short url as hash
+        """
         _hash = ''.join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for _ in range(7))
         query = '''select id from urlsbase WHERE shrink = '%s' ''' % (_hash)
         rows = _execute(query)
