@@ -41,15 +41,15 @@ def get_url_title(url):
         response = http_client.fetch(url)
         soup = BeautifulSoup(response.body, 'html.parser')
         title = soup.title.string
-    except httpclient.HTTPError as e:
+    except httpclient.HTTPError as e_exp:
         # HTTPError is raised for non-200 responses; the response
         # can be found in e.response.
-        msg = "something went wrong: %s" % str(e)
+        msg = "something went wrong: %s" % str(e_exp)
         logger.info(msg)
         title = 0
-    except Exception as e:
+    except Exception as e_exp:
         # Other errors are possible, such as IOError.
-        msg = "something went wrong: %s" % str(e)
+        msg = "something went wrong: %s" % str(e_exp)
         logger.info(msg)
         title = 0
     http_client.close()
@@ -69,29 +69,29 @@ def update_url_title(url=None, row=None):
                         set title = '%s', updated_at = '%s'
                         where id = %d ''' % (title, updated_at, row)
             _execute(query)
-    except Exception as e:
-        msg = "something went wrong: %s" % e
+    except Exception as e_exp:
+        msg = "something went wrong: %s" % e_exp
         logger.info(msg)
 
 def check_url_existence(url=None, url_hash=None):
     """To if url hash already generated
     """
     try:
-        if url!=None:
+        if url != None:
             query = '''select * from urlsbase WHERE url like '%s' ''' % (url)
-        elif url_hash!=None:
+        elif url_hash != None:
             query = '''select * from urlsbase WHERE shrink like '%s' ''' % (url_hash)
         else:
-            return None            
+            return None
         row = _execute(query, False)
-        if row!= None:
+        if row != None:
             return row
-    except Exception as e:
-        msg = "something went wrong: %s" % e
+    except Exception as e_exp:
+        msg = "something went wrong: %s" % e_exp
         logger.info(msg)
         return None
 
-def update_url_hit(row=None,url=None,url_hash=None):
+def update_url_hit(row=None, url=None, url_hash=None):
     """To update hit count on url
     """
     try:
@@ -105,17 +105,16 @@ def update_url_hit(row=None,url=None,url_hash=None):
                         set hits = hits+1, lasthit_at = '%s' 
                         where url = %s ''' % (lasthit_at, url)
         elif url_hash != None:
-            query = ''' update urlsbase 
+            query = ''' update urlsbase
                         set hits = hits+1, lasthit_at = '%s' 
                         where shrink = %d ''' % (lasthit_at, url_hash)
         else:
             return None
-            
         row = _execute(query, False)
-        if row!= None:
+        if row != None:
             return True
-    except Exception as e:
-        msg = "something went wrong: %s" % e
+    except Exception as e_exp:
+        msg = "something went wrong: %s" % e_exp
         logger.info(msg)
         return None
     pass
@@ -207,8 +206,8 @@ class URLshrinkHandler(BaseHandler):
                     update_url_title(url,row[0])
                 logger.info("Tile of url fetched, added to DB")
                 
-        except Exception as e:
-            msg = "something went wrong: %s" % e
+        except Exception as e_exp:
+            msg = "something went wrong: %s" % e_exp
             logger.info(msg)
             if not self._finished:
                 #if the connection is closed, it won't call this function
@@ -245,8 +244,8 @@ class TitleSearchHandler(BaseHandler):
                 self.response.append(temp_dict)
             self.write_json()
             
-        except Exception as e:
-            msg = "something went wrong: %s" % e
+        except Exception as e_exp:
+            msg = "something went wrong: %s" % e_exp
             logger.info(msg)
             if not self._finished:
                 #if the connection is closed, it won't call this function
@@ -270,8 +269,8 @@ class URLMetaListHandler(BaseHandler):
                 self.response.append(temp_dict)
             self.write_json()
             
-        except Exception as e:
-            msg = "something went wrong: %s" % e
+        except Exception as e_exp:
+            msg = "something went wrong: %s" % e_exp
             logger.info(msg)
             if not self._finished:
                 #if the connection is closed, it won't call this function
@@ -300,8 +299,8 @@ class URLMetaHandler(BaseHandler):
                     self.send_error(404, message="Short url doesnt exist")
             else:
                 self.send_error(404, message="Short url doesnt exist")
-        except Exception as e:
-            msg = "something went wrong: %s" % e
+        except Exception as e_exp:
+            msg = "something went wrong: %s" % e_exp
             logger.info(msg)
             if not self._finished:
                 #if the connection is closed, it won't call this function
