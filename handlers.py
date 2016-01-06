@@ -23,7 +23,7 @@ def _execute(query, fetchall=True):
     cursorobj = connection.cursor()
     try:
         cursorobj.execute(query)
-        if fetchall==True:
+        if fetchall == True:
             result = cursorobj.fetchall()
         else:
             result = cursorobj.fetchone()
@@ -55,18 +55,19 @@ def get_url_title(url):
     http_client.close()
     return title
 
-def update_url_title(url=None,row=None):
+def update_url_title(url=None, row=None):
     """To update title of page in db
     """
     try:
-        if row==None or url==None:
+        if row == None or url == None:
             msg = "row to update title is not existant"
-            logger.info(msg) 
+            logger.info(msg)
         else:
             title = get_url_title(url)
             updated_at = datetime.datetime.now()
             query = ''' update urlsbase
-                        set title = '%s', updated_at = '%s' where id = %d ''' % (title, updated_at, row)
+                        set title = '%s', updated_at = '%s'
+                        where id = %d ''' % (title, updated_at, row)
             _execute(query)
     except Exception as e:
         msg = "something went wrong: %s" % e
@@ -81,8 +82,7 @@ def check_url_existence(url=None, url_hash=None):
         elif url_hash!=None:
             query = '''select * from urlsbase WHERE shrink like '%s' ''' % (url_hash)
         else:
-            return None
-            
+            return None            
         row = _execute(query, False)
         if row!= None:
             return row
@@ -96,15 +96,18 @@ def update_url_hit(row=None,url=None,url_hash=None):
     """
     try:
         lasthit_at = datetime.datetime.now()
-        if row!=None:
+        if row != None:
             query = ''' update urlsbase
-                        set hits = hits+1, lasthit_at = '%s' where id = %d ''' % (lasthit_at, row)
-        elif url!=None:
+                        set hits = hits+1, lasthit_at = '%s' 
+                        where id = %d ''' % (lasthit_at, row)
+        elif url != None:
             query = ''' update urlsbase
-                        set hits = hits+1, lasthit_at = '%s' where url = %s ''' % (lasthit_at, url)
-        elif url_hash!=None:
-            query = query = ''' update urlsbase
-                        set hits = hits+1, lasthit_at = '%s' where shrink = %d ''' % (lasthit_at, url_hash)
+                        set hits = hits+1, lasthit_at = '%s' 
+                        where url = %s ''' % (lasthit_at, url)
+        elif url_hash != None:
+            query = ''' update urlsbase 
+                        set hits = hits+1, lasthit_at = '%s' 
+                        where shrink = %d ''' % (lasthit_at, url_hash)
         else:
             return None
             
@@ -120,8 +123,7 @@ def update_url_hit(row=None,url=None,url_hash=None):
 def timestamp_parser(timestamp_str=None):
     """DB timestamp to datetime
     """
-    if timestamp_str!=None:
-        
+    if timestamp_str != None:
         return datetime.datetime.strptime(timestamp_str, "%Y-%m-%d %H:%M:%S.%f")
     else:
         return None
@@ -221,7 +223,7 @@ class URLshrinkHandler(BaseHandler):
         if len(rows)== 0:
             return _hash
         else:
-            return self.create_path()
+            return self.create_hash()
 
 class TitleSearchHandler(BaseHandler):
     """
@@ -298,8 +300,6 @@ class URLMetaHandler(BaseHandler):
                     self.send_error(404, message="Short url doesnt exist")
             else:
                 self.send_error(404, message="Short url doesnt exist")
-            
-            
         except Exception as e:
             msg = "something went wrong: %s" % e
             logger.info(msg)
