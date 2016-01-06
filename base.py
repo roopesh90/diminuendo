@@ -57,7 +57,7 @@ class BaseHandler(tornado.web.RequestHandler):
         arg = self.request.arguments[name]
         logger.debug("Found '%s': %s in JSON arguments", name, arg)
         return arg
-    
+
     def write_error(self, status_code, **kwargs):
         if 'message' not in kwargs:
             if status_code == 405:
@@ -71,9 +71,9 @@ class BaseHandler(tornado.web.RequestHandler):
     def write_json(self):
         output = json.dumps(self.response)
         self.write(output)
-    
+
     def get_short_url(self, url_hash=""):
         """Returns formed short url from url_hash
         """
-        short_url =("%s://%s/%s" % (self.request.protocol, self.request.host,url_hash)) 
+        short_url =("%s://%s/%s" % (self.request.protocol, self.request.host,url_hash))
         return short_url
