@@ -23,7 +23,7 @@ def _execute(query, fetchall=True):
     cursorobj = connection.cursor()
     try:
         cursorobj.execute(query)
-        if fetchall == True:
+        if fetchall is True:
             result = cursorobj.fetchall()
         else:
             result = cursorobj.fetchone()
@@ -59,7 +59,7 @@ def update_url_title(url=None, row=None):
     """To update title of page in db
     """
     try:
-        if row == None or url == None:
+        if row is None or url is None:
             msg = "row to update title is not existant"
             logger.info(msg)
         else:
@@ -130,7 +130,7 @@ def timestamp_parser(timestamp_str=None):
 def timestamp_to_hooman(timestamp_str=None):
     """DB timestamp to human readable
     """
-    if timestamp_str!=None:
+    if timestamp_str != None:
         date_time = timestamp_parser(timestamp_str)
         return date_time.strftime("%A ,%d %b %Y, %I:%M:%S %p")
     else:
@@ -155,11 +155,11 @@ class RedirectHandler(BaseHandler):
     """
     @tornado.web.asynchronous
     def get(self, url_hash):
-        if url_hash==None:
+        if url_hash is None:
             self.redirect("/")
         else:
             row = check_url_existence(None,url_hash)
-            if row==None:
+            if row is None:
                 self.send_error(404, message="Requested url not found") # Bad Request
             else:
                 self.redirect(row[1])
@@ -176,7 +176,7 @@ class URLshrinkHandler(BaseHandler):
             url = self.get_json_argument('u')
             row = check_url_existence(url)
             #check url existence and generate hash and insert to db
-            if row == None:
+            if row is None:
                 url_hash = self.create_hash()
                 created_at = datetime.datetime.now()
                 updated_at = datetime.datetime.now()
@@ -198,7 +198,7 @@ class URLshrinkHandler(BaseHandler):
             self.write_json()
             self.finish()
             
-            if row == None:
+            if row is None:
                 #get title and update row
                 query = '''select id from urlsbase WHERE shrink = '%s' ''' % (url_hash)
                 row = _execute(query, False)
