@@ -1,18 +1,20 @@
+"""
+    Main Handlers and supporting methods for the app
+"""
+
+import logging as logger
 import tornado.ioloop
 import tornado.web
-
-from base import BaseHandler
-import string
-import random
-import sqlite3
-
-from settings import SETTINGS as dummySettings
-import logging as logger
 import tornado.httpclient as httpclient
 from bs4 import BeautifulSoup
 import datetime
 import inspect
+import string
+import random
+import sqlite3
 
+from base import BaseHandler
+from settings import SETTINGS as dummySettings
 
 def _execute(query, fetchall=True):
     """Single method to execute all sql queries
