@@ -144,12 +144,12 @@ class MainHandler(BaseHandler):
         app_handlers = [(handler.regex.pattern, handler.handler_class) for handler in self.application.handlers[0][1]]
         self.response = []
         for handler in app_handlers:
-            temp_dict={}
+            temp_dict = {}
             temp_dict['url'] = handler[0]
             temp_dict['description'] = inspect.getdoc(handler[1])
             self.response.append(temp_dict)
         self.write_json()
-        
+
 class RedirectHandler(BaseHandler):
     """Redirect to url and asynchronously updates hit count
     """
@@ -158,15 +158,14 @@ class RedirectHandler(BaseHandler):
         if url_hash is None:
             self.redirect("/")
         else:
-            row = check_url_existence(None,url_hash)
+            row = check_url_existence(None, url_hash)
             if row is None:
                 self.send_error(404, message="Requested url not found") # Bad Request
             else:
                 self.redirect(row[1])
                 update_url_hit(row[0])
         return
-            
-    
+
 class URLshrinkHandler(BaseHandler):
     """Checks url existence, creates short url and updates title to db entry of url asynchronously
     """
@@ -186,26 +185,22 @@ class URLshrinkHandler(BaseHandler):
                             ('%s', '%s', '%s', '%s', '%s') ''' % (url, url_hash, created_at, updated_at, lasthit_at)
                 _execute(query)
             else:
-                
                 url_hash = row[3]
                 url = row[1]
                 created_at = row[5]
                 updated_at = row[6]
                 lasthit_at = row[7]
-            
             self.response['url'] = url
             self.response['short_url'] = self.get_short_url(url_hash)
             self.write_json()
             self.finish()
-            
             if row is None:
                 #get title and update row
                 query = '''select id from urlsbase WHERE shrink = '%s' ''' % (url_hash)
                 row = _execute(query, False)
-                if row!= None:
-                    update_url_title(url,row[0])
+                if row != None:
+                    update_url_title(url, row[0])
                 logger.info("Tile of url fetched, added to DB")
-                
         except Exception as e_exp:
             msg = "something went wrong: %s" % e_exp
             logger.info(msg)
@@ -216,10 +211,10 @@ class URLshrinkHandler(BaseHandler):
                 pass
 
     def create_hash(self):
-        _hash = ''.join(random.choice(string.ascii_lowercase +string.ascii_uppercase + string.digits) for _ in range(7))
+        _hash = ''.join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for _ in range(7))
         query = '''select id from urlsbase WHERE shrink = '%s' ''' % (_hash)
         rows = _execute(query)
-        if len(rows)== 0:
+        if len(rows) == 0:
             return _hash
         else:
             return self.create_hash()
@@ -232,7 +227,8 @@ class TitleSearchHandler(BaseHandler):
         try:
             escape_char = '%'
             search_query = self.get_json_argument('q')
-            query = '''select * from urlsbase WHERE title like '%c%s%c' ''' % (escape_char, search_query, escape_char)
+            query = '''select * from urlsbase
+                    where title like '%c%s%c' ''' % (escape_char, search_query, escape_char)
             rows = _execute(query)
             self.response = []
             # collate results as json list
@@ -243,7 +239,6 @@ class TitleSearchHandler(BaseHandler):
                 temp_dict['short_url'] = self.get_short_url(entries[3])
                 self.response.append(temp_dict)
             self.write_json()
-            
         except Exception as e_exp:
             msg = "something went wrong: %s" % e_exp
             logger.info(msg)
@@ -259,7 +254,7 @@ class URLMetaListHandler(BaseHandler):
     """
     def get(self):
         try:
-            query = '''select * from urlsbase''' 
+            query = '''select * from urlsbase'''
             rows = _execute(query)
             self.response = []
             # collate results as json list
@@ -268,7 +263,6 @@ class URLMetaListHandler(BaseHandler):
                 temp_dict['meta_url'] = self.get_short_url("meta/%s" % (entries[3]))
                 self.response.append(temp_dict)
             self.write_json()
-            
         except Exception as e_exp:
             msg = "something went wrong: %s" % e_exp
             logger.info(msg)
@@ -283,10 +277,10 @@ class URLMetaHandler(BaseHandler):
     """
     def get(self, url_hash):
         try:
-            if url_hash!=None:
+            if url_hash != None:
                 row = check_url_existence(None, url_hash)
                 # collate required fields
-                if row!=None:
+                if row != None:
                     self.response['url'] = row[1]
                     self.response['title'] = row[2]
                     self.response['short_url'] = self.get_short_url(row[3])
