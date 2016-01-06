@@ -52,10 +52,10 @@ class BaseHandler(tornado.web.RequestHandler):
                 msg = "Missing argument '%s'" % name
                 logger.debug(msg)
                 raise tornado.web.HTTPError(400, msg)
-            logger.debug("Returning default argument %s, as we couldn't find '%s' in %s" % (default, name, self.request.arguments))
+            logger.debug("Returning default argument %s, as we couldn't find '%s' in %s", default, name, self.request.arguments)
             return default
         arg = self.request.arguments[name]
-        logger.debug("Found '%s': %s in JSON arguments" % (name, arg))
+        logger.debug("Found '%s': %s in JSON arguments", name, arg)
         return arg
     
     def write_error(self, status_code, **kwargs):
