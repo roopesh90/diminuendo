@@ -1,8 +1,11 @@
+"""
+    Base Handlers to overide
+"""
+import logging as logger
+
 import json
 import tornado.web
 import tornado.options
-
-import logging as logger
 
 class BaseHandler(tornado.web.RequestHandler):
     """A class to collect common handler methods - all other handlers should
@@ -15,18 +18,17 @@ class BaseHandler(tornado.web.RequestHandler):
         self.set_header('Server', tornado.options.options.SERVER)
         self.set_header("Content-Type", "application/json")
         logger.debug("Default headers set")
-    
+
     def prepare(self):
         """Incorporate request JSON into arguments dictionary.
         """
         # Set up response dictionary.
         self.response = dict()
-        
+
     def load_json(self):
         """Load JSON from the request body and store them in
         self.request.arguments, like Tornado does by default for POSTed form
         parameters.
-        
         If JSON cannot be decoded, raises an HTTPError with status 400.
         """
         logger.debug("load_json called")
@@ -36,7 +38,7 @@ class BaseHandler(tornado.web.RequestHandler):
             msg = "Could not decode JSON: %s" % self.request.body
             logger.debug(msg)
             self.send_error(400, message=msg) # Bad Request
-            
+
     def get_json_argument(self, name, default=None):
         """Find and return the argument with key 'name' from JSON request data.
         Similar to Tornado's get_argument() method.
@@ -50,28 +52,29 @@ class BaseHandler(tornado.web.RequestHandler):
                 msg = "Missing argument '%s'" % name
                 logger.debug(msg)
                 raise tornado.web.HTTPError(400, msg)
-            logger.debug("Returning default argument %s, as we couldn't find '%s' in %s" % (default, name, self.request.arguments))
+            logger.debug("Returning default argument %s, as we couldn't find '%s' in %s", default, name, self.request.arguments)
             return default
         arg = self.request.arguments[name]
-        logger.debug("Found '%s': %s in JSON arguments" % (name, arg))
+        logger.debug("Found '%s': %s in JSON arguments", name, arg)
         return arg
-    
+
     def write_error(self, status_code, **kwargs):
         if 'message' not in kwargs:
             if status_code == 405:
                 kwargs['message'] = 'Invalid HTTP method.'
             else:
                 kwargs['message'] = 'Unknown error.'
-
         self.response = kwargs
         self.write_json()
 
     def write_json(self):
+        """Returns Data as json to user
+        """
         output = json.dumps(self.response)
         self.write(output)
-    
+
     def get_short_url(self, url_hash=""):
         """Returns formed short url from url_hash
         """
-        short_url =("%s://%s/%s" % (self.request.protocol, self.request.host,url_hash)) 
+        short_url = ("%s://%s/%s" % (self.request.protocol, self.request.host, url_hash))
         return short_url

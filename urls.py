@@ -1,6 +1,9 @@
+"""
+    Urls for the app
+"""
 import os
-import tornado.web
-from handlers import MainHandler, URLshrinkHandler, RedirectHandler, TitleSearchHandler, URLMetaListHandler, URLMetaHandler
+from handlers import MainHandler, URLshrinkHandler, RedirectHandler, TitleSearchHandler
+from handlers import URLMetaListHandler, URLMetaHandler
 
 PATH = lambda root, *a: os.path.join(root, *a)
 ROOT = os.path.dirname(os.path.abspath(__file__))
