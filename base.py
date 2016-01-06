@@ -1,8 +1,11 @@
+"""
+    Base Handlers to overide
+"""
+import logging as logger
+
 import json
 import tornado.web
 import tornado.options
-
-import logging as logger
 
 class BaseHandler(tornado.web.RequestHandler):
     """A class to collect common handler methods - all other handlers should
@@ -15,18 +18,17 @@ class BaseHandler(tornado.web.RequestHandler):
         self.set_header('Server', tornado.options.options.SERVER)
         self.set_header("Content-Type", "application/json")
         logger.debug("Default headers set")
-    
+
     def prepare(self):
         """Incorporate request JSON into arguments dictionary.
         """
         # Set up response dictionary.
         self.response = dict()
-        
+
     def load_json(self):
         """Load JSON from the request body and store them in
         self.request.arguments, like Tornado does by default for POSTed form
         parameters.
-        
         If JSON cannot be decoded, raises an HTTPError with status 400.
         """
         logger.debug("load_json called")
@@ -36,7 +38,7 @@ class BaseHandler(tornado.web.RequestHandler):
             msg = "Could not decode JSON: %s" % self.request.body
             logger.debug(msg)
             self.send_error(400, message=msg) # Bad Request
-            
+
     def get_json_argument(self, name, default=None):
         """Find and return the argument with key 'name' from JSON request data.
         Similar to Tornado's get_argument() method.
