@@ -1,5 +1,4 @@
 import os
-import tornado.web
 from handlers import MainHandler, URLshrinkHandler, RedirectHandler, TitleSearchHandler, URLMetaListHandler, URLMetaHandler
 
 PATH = lambda root, *a: os.path.join(root, *a)
