@@ -64,16 +64,17 @@ class BaseHandler(tornado.web.RequestHandler):
                 kwargs['message'] = 'Invalid HTTP method.'
             else:
                 kwargs['message'] = 'Unknown error.'
-
         self.response = kwargs
         self.write_json()
 
     def write_json(self):
+        """Returns Data as json to user
+        """
         output = json.dumps(self.response)
         self.write(output)
 
     def get_short_url(self, url_hash=""):
         """Returns formed short url from url_hash
         """
-        short_url =("%s://%s/%s" % (self.request.protocol, self.request.host,url_hash))
+        short_url = ("%s://%s/%s" % (self.request.protocol, self.request.host, url_hash))
         return short_url
