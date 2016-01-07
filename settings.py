@@ -13,7 +13,8 @@ PATH = lambda root, *a: os.path.join(root, *a)
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
 ##Port Details will be provided by commandline parameters using supervisor
-define("port", default=8888, help="run on the given port", type=int)
+__PORT = int(os.environ.get("PORT", 8888))
+define("port", default=__PORT, help="run on the given port", type=int)
 options.parse_command_line()
 
 SETTINGS = {}
