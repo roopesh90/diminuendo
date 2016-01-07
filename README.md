@@ -37,7 +37,7 @@
 3. run the command to switch to virtualenv:
 ` $ source venv/bin/activate `
 4. install required libraries to the using pip as follows:
-` $ pip install -r requirements.pip `
+` $ pip install -r requirements.txt `
 5. run command to start server:
 `$ python app.py `
 6. goto http://localhost:8888/ to access the API
