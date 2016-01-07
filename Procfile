@@ -1,1 +1,1 @@
-web: python app.py --port=80
+web: python app.py
